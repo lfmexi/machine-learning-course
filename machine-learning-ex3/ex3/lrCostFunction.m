@@ -35,15 +35,21 @@ grad = zeros(size(theta));
 %           temp(1) = 0;   % because we don't add anything for j = 0  
 %           grad = grad + YOUR_CODE_HERE (using the temp variable)
 %
+g = sigmoid(X * theta);
 
+squareTheta = theta(2:end) .^ 2;
 
+regularizationTerm = (lambda / (2 * m)) * sum(squareTheta);
 
+J = (1 / m) * sum(-y .* log(g) - (1 - y) .* log(1 - g)) + regularizationTerm;
 
+grad = (1 / m) * X' * (g - y);
 
+temporalTheta = theta;
 
+temporalTheta(1) = 0;
 
-
-
+grad = grad + (lambda / m) * temporalTheta;
 
 % =============================================================
 
