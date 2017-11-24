@@ -62,24 +62,54 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+X = [ones(m, 1) X];
 
+Z2 = X * Theta1';
+A2 = [ones(size(Z2),1) sigmoid(Z2)];
 
+Z3 = A2 * Theta2';
+A3 = sigmoid(Z3);
 
+for i = 1:m,
+  exampleY = zeros(1, num_labels);
+  exampleY(1, y(i)) = 1;
+  
+  for k = 1:num_labels,
+    costTerm = -exampleY(k)*log(A3(i, k)) - (1 - exampleY(k))* log(1 - A3(i, k));
+    J += costTerm;
+  end;
+end;
 
+D1 = 0;
+D2 = 0;
 
+for t = 1:m,
+  exampleY = zeros(1, num_labels);
+  exampleY(1, y(t)) = 1;
 
+  delta3 = A3(t, :) - exampleY;
+  delta3 = delta3';
+  delta2 = Theta2'(2:end,:) * delta3 .* sigmoidGradient(Z2(t, :)');
 
+  D1 = D1 + delta2 * X(t,:);
+  D2 = D2 + delta3 * A2(t, :);
+end
 
+squaredTheta1 = Theta1(1:end, 2:end) .^ 2;
 
+squaredTheta2 = Theta2(1:end, 2:end) .^ 2;
 
+flatSquaredTheta1 = squaredTheta1(:);
+flatSquaredTheta2 = squaredTheta2(:);
 
+regularizationTerm = sum(flatSquaredTheta1) + sum(flatSquaredTheta2);
 
+J = J/m;
 
+J = J + (lambda/ (2 * m)) * regularizationTerm;
 
-
-
-
-
+Theta1_grad = (1 / m) * D1 + (lambda / m) * [zeros(size(Theta1, 1), 1) Theta1(:, 2:end) ];
+Theta2_grad = (1 / m) * D2 + (lambda / m) * [zeros(size(Theta2, 1), 1) Theta2(:, 2:end) ];
 % -------------------------------------------------------------
 
 % =========================================================================
