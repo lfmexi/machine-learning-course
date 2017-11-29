@@ -19,16 +19,20 @@ grad = zeros(size(theta));
 %               You should set J to the cost and grad to the gradient.
 %
 
+squareTheta = theta(2:end) .^ 2;
+regularizationTerm = (lambda / (2 * m)) * sum(squareTheta);
 
+hypothesis = X * theta;
 
+J = (1 / (2 * m) ) * sum((hypothesis - y).^2) + regularizationTerm;
 
+grad = (1 / m) * X' * (hypothesis - y);
 
+temporalTheta = theta;
 
+temporalTheta(1) = 0;
 
-
-
-
-
+grad = grad + (lambda / m) * temporalTheta;
 
 % =========================================================================
 
