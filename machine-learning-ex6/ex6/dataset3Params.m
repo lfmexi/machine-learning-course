@@ -23,10 +23,35 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+c_tests = [0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
+sigma_tests = [0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
 
+errors = [];
 
+for i=1:length(c_tests)
+    C = c_tests(i);
 
+    errorOverSigma = [];
 
+    for j=1:length(sigma_tests)
+    
+        sigma = sigma_tests(j);
+        model = svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma)); 
+        predictions = svmPredict(model,Xval);
+
+        error = mean(double(predictions ~= yval));
+
+        errorOverSigma = [errorOverSigma ; error];
+    end
+
+    errors = [errors errorOverSigma];
+end
+
+[minSigmaIndex,minCIndex] = find(errors == min(min(errorOverC)));
+
+% Optimum C and sigma are identified from the matrix above
+C = c_tests(minCIndex);
+sigma = sigma_tests(minSigmaIndex);
 
 
 % =========================================================================
