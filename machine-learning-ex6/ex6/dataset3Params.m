@@ -47,7 +47,7 @@ for i=1:length(c_tests)
     errors = [errors errorOverSigma];
 end
 
-[minSigmaIndex,minCIndex] = find(errors == min(min(errorOverC)));
+[minSigmaIndex,minCIndex] = find(errors == min(min(errors)));
 
 % Optimum C and sigma are identified from the matrix above
 C = c_tests(minCIndex);
